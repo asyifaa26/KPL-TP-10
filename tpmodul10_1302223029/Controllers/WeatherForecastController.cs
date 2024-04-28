@@ -4,30 +4,42 @@ namespace tpmodul10_1302223029.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class WeatherForecastController : ControllerBase
+    public class MahasiswaController : ControllerBase
     {
-        private static readonly string[] Summaries = new[]
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
+        private static List<Mahasiswa> mahasiswaList = new List<Mahasiswa> {
+            new Mahasiswa("Asy-Syifa Ekhar Nanda Kautsar", "1302223029"),
+            new Mahasiswa("Fionadhilla Gustriani", "1302220002"),
+            new Mahasiswa("Febry Twenido Firmanio", "1302220084"),
+            new Mahasiswa("Henri Silas Samban", "1302220087"),
+            new Mahasiswa("Indra Mahesa", "1302220067")
         };
 
-        private readonly ILogger<WeatherForecastController> _logger;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        [HttpGet]
+        public IEnumerable<Mahasiswa> Get()
         {
-            _logger = logger;
+            return mahasiswaList;
         }
 
-        [HttpGet(Name = "GetWeatherForecast")]
-        public IEnumerable<WeatherForecast> Get()
+
+        [HttpGet("{id}")]
+        public Mahasiswa Get(int id)
         {
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-            {
-                Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                TemperatureC = Random.Shared.Next(-20, 55),
-                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-            })
-            .ToArray();
+            return mahasiswaList[id];
+        }
+
+        [HttpPost]
+        public ActionResult Post([FromBody] Mahasiswa mahasiswa)
+        {
+            mahasiswaList.Add(mahasiswa);
+            return CreatedAtAction(nameof(Get), new { id = mahasiswaList.IndexOf(mahasiswa) }, mahasiswa);
+        }
+
+        [HttpDelete("{id}")]
+        public ActionResult Delete(int id)
+        {
+            mahasiswaList.RemoveAt(id);
+            return NoContent();
         }
     }
 }
